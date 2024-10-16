@@ -19,20 +19,20 @@ def showFont(text, x, y, color):
 # function: initial game
 # -------------------------------------------------------------------------
 def resetGame():
-    # 宣告使用全域變數
+    # global variables
     global game_mode, brick_num, bricks_list
 
-    # 磚塊
+    # bricks
     for bricks in bricks_list:
-        # 磚塊顏色
+        # setting bricks color
         bricks.color = color_gray_block
-        # 開啟磚塊
+        # bricks visible setting
         bricks.visible = True
-    # 0:等待開球
+    # 0: wait for start
     game_mode = 0
-    # 磚塊數量
+    # bricks number
     brick_num = playground.brick_num_limmit
-    # 移動速度
+    # velocity setting
     resetVelocity()
 
 # -------------------------------------------------------------------------
@@ -54,7 +54,7 @@ color_gray = (107, 130, 114)
 color_gray_block = (20, 31, 23)
 
 # game state
-# 0: waiting for start
+# 0: wait for start
 # 1: the game is running
 game_mode = 0
 
