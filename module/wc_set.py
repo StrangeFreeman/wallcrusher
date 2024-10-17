@@ -1,5 +1,6 @@
 # encoding: utf-8
 import numpy as np
+from typing import Tuple
 
 #-------------------------------------------------------------------------
 # draw rectangle
@@ -64,7 +65,7 @@ class Circle(object):
 #-------------------------------------------------------------------------
     
 class Game(object):
-    def __init__(self, canvas_width, canvas_height, paddle_width, paddle_height, ball_radius, brick_width, brick_height, speed):
+    def __init__(self, canvas_width: int, canvas_height: int, paddle_width: int, paddle_height: int, ball_radius: int, brick_width: int, brick_height: int, speed: int) -> None:
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
         self.paddle_width = paddle_width
@@ -78,7 +79,7 @@ class Game(object):
 # set basic game parameters 2
 #-------------------------------------------------------------------------       
 class PlayGround0(Game):
-    def __init__(self, canvas_width, canvas_height, paddle_width, paddle_height, ball_radius, brick_width, brick_height, speed, brick_x, brick_y, brick_num_limmit, brick_row_limmit, brick_col_limmit, brick_row_space, brick_col_space):
+    def __init__(self, canvas_width: int, canvas_height: int, paddle_width: int, paddle_height: int, ball_radius: int, brick_width: int, brick_height: int, speed: int, brick_x: int, brick_y: int, brick_num_limmit: int, brick_row_limmit: int, brick_col_limmit: int, brick_row_space: int, brick_col_space: int) -> None:
         super().__init__(canvas_width, canvas_height, paddle_width, paddle_height, ball_radius, brick_width, brick_height, speed)
         self.brick_x = brick_x
         self.brick_y = brick_y
@@ -88,7 +89,7 @@ class PlayGround0(Game):
         self.brick_row_space = brick_row_space
         self.brick_col_space = brick_col_space
         
-    def banner(self):
+    def banner(self) -> None:
         banner = '''
 ██████╗ ██╗      █████╗ ██╗   ██╗ ██████╗ ██████╗  ██████╗ ██╗   ██╗███╗   ██╗██████╗ 
 ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝ ██╔══██╗██╔═══██╗██║   ██║████╗  ██║██╔══██╗
@@ -99,7 +100,7 @@ class PlayGround0(Game):
         '''
         print(banner)
     
-    def getYesNo(self, prompt, default):
+    def getYesNo(self, prompt: str, default: str) -> Tuple[bool, bool]:
         if default.lower() == 'y':
             prompt = f"{prompt}(Y/n) "
         else:
@@ -111,11 +112,11 @@ class PlayGround0(Game):
         
         return user_input in ['yes', 'y'], user_input in ['no', 'n']
     
-    def inputParameters(self, prompt, default):
+    def inputParameters(self, prompt: str, default: str) -> bool:
         user_input = input(f"{prompt}({default}) ")
         return int(user_input) if user_input != '' else default
     
-    def setParameters(self, flag):
+    def setParameters(self, flag) -> None:
         self.parameters = {
             'canvas_width': self.canvas_width,
             'canvas_height': self.canvas_height,
@@ -140,7 +141,7 @@ class PlayGround0(Game):
                 
         self.updateParameter()
     
-    def updateParameter(self):
+    def updateParameter(self) -> None:
         self.canvas_width = self.parameters['canvas_width']
         self.canvas_height = self.parameters['canvas_height']
         self.paddle_width = self.parameters['paddle_width']
@@ -157,7 +158,7 @@ class PlayGround0(Game):
         self.brick_row_space = self.parameters['brick_row_space']
         self.brick_col_space = self.parameters['brick_col_space']
     
-    def preSetup(self):
+    def preSetup(self) -> Tuple[bool, bool]:
         self.banner()
         auto = False
         is_yes, is_no = self.getYesNo('Custom setting?', 'n')
@@ -211,8 +212,9 @@ class Stylish(object):
 #       x       : x
 #       y       : y
 #       boxRect : [x, y, width, height]
+#       radius  : radius
 # -------------------------------------------------------------------------
-def isCollision(x, y, boxRect, radius):
+def isCollision(x, y, boxRect, radius) -> bool:
     if (
         x + radius > boxRect[0]                      # 球和物體左側碰撞檢測 
         and x - radius < boxRect[0] + boxRect[2]     # 球和物體右側碰撞檢測
@@ -228,8 +230,9 @@ def isCollision(x, y, boxRect, radius):
 #       x       : x
 #       y       : y
 #       boxRect : [x, y, width, height]
+#        radius  : radius
 # -------------------------------------------------------------------------
-def isCollision7(x, y, boxRect, radius):
+def isCollision7(x: int, y: int, boxRect: list, radius: int) -> Tuple[bool, np.array]:
     ball_center = np.array([x,y])
     brick_half_extents = np.array([boxRect[2]/2, boxRect[3]/2])   
     brick_center = np.array([boxRect[0], boxRect[1]]) + brick_half_extents
@@ -248,7 +251,7 @@ def isCollision7(x, y, boxRect, radius):
 # function: orthoprojection
 # input: numpy array
 # -------------------------------------------------------------------------
-def vectorProjection(a, b):
+def vectorProjection(a: np, b: np) -> np:
     divided = np.dot(b, b)
     if divided != 0:
         projection = (np.dot(a, b) / divided) * b
@@ -259,7 +262,7 @@ def vectorProjection(a, b):
 # -------------------------------------------------------------------------
 # function: collision response
 # -------------------------------------------------------------------------
-def collisionResponse(ball_pos, radius, velocity, boxRect, max_steps):
+def collisionResponse(ball_pos: list, radius: int, velocity: np, boxRect: list, max_steps: int) -> Tuple[bool, np.array]:
     dynamic_velocity = np.linalg.norm(velocity)
     try:
         dynamic_velocity = int(dynamic_velocity)

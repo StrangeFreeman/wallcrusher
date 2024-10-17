@@ -2,13 +2,13 @@
 
 import pygame
 from pygame.locals import *
-from wc_set import *
+from module.wc_set import *
 import numpy as np
 
 # -------------------------------------------------------------------------
 # function: display words
 # -------------------------------------------------------------------------
-def showFont(text, x, y, color):
+def showFont(text: str, x: int, y: int, color: tuple) -> None:
     global canvas
     text = font.render(text, True, color)
     canvas.blit(text, (x, y))
@@ -17,27 +17,27 @@ def showFont(text, x, y, color):
 # -------------------------------------------------------------------------
 # function: initial game
 # -------------------------------------------------------------------------
-def resetGame():
-    # 宣告使用全域變數
+def resetGame() -> None:
+    # global variables
     global game_mode, brick_num, bricks_list
 
-    # 磚塊
+    # bricks
     for bricks in bricks_list:
-        # 磚塊顏色
+        # setting bricks color
         bricks.color = color_gray_block
-        # 開啟磚塊
-        bricks.visivle = True
-    # 0:等待開球
+        # bricks visible setting
+        bricks.visible = True
+    # 0: wait for start
     game_mode = 0
-    # 磚塊數量
+    # bricks number
     brick_num = playground.brick_num_limmit
-    # 移動速度
+    # velocity setting
     resetVelocity()
 
 # -------------------------------------------------------------------------
 # function: initial velocity
 # -------------------------------------------------------------------------
-def resetVelocity():
+def resetVelocity() -> None:
     global dx, dy
     dx = playground.speed
     dy = - playground.speed
@@ -154,12 +154,12 @@ while running:
         # ball velocity
         velocity = np.array([dx, dy])
         # collision response - ball hits bricks
-        if bricks.visivle:
+        if bricks.visible:
             is_collision, velocity= collisionResponse(ball.pos, playground.ball_radius, velocity, bricks.rect, 8)
             if is_collision:
                 dx, dy = velocity
             
-                bricks.visivle = False
+                bricks.visible = False
                 brick_num -= 1
                 if brick_num <= 0:
                     resetGame()
