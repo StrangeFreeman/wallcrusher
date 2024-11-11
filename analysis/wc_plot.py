@@ -2,6 +2,7 @@ import os
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from graphviz import Digraph
 
 #-------------------------------------------------------------------------
 # velocity analysis
@@ -13,13 +14,15 @@ class VelocityAnalyzer(object):
         self.data = {}
         self.headers = []
         self.csv_path = os.path.join('analysis',self.file_name)
+        self.fileSetup()
         
     def fileSetup(self) -> None:
         with open(self.csv_path, 'w', newline='') as file:
             file_witer = csv.writer(file)
             file_witer.writerow(['counter', 'brick_name', 'x', 'y'])
     
-    def recorder(self, brick_name: str, x: float, y: float) -> None:
+    def recorder(self, brick_name: str, velocity: list) -> None:
+        x, y = velocity
         self.conter += 1
         with open(self.csv_path, 'a', newline='') as file:
             file_writer = csv.writer(file)
@@ -100,6 +103,31 @@ class DynamicScatterPlotter(object):
     def show(self) -> None:
         plt.show()
         
+# -------------------------------------------------------------------------
+# bvh tree visualize
+# -------------------------------------------------------------------------
+def visualize_bvh(node, graph=None, node_id=0):
+    if graph is None:
+        graph = Digraph()
+    
+    if node.left is None and node.right is None:
+        # Leaf node
+        graph.node(str(node_id), f"Leaf\nMin: {node.bounding_box.min_point}\nMax: {node.bounding_box.max_point}")
+    else:
+        # Internal node
+        graph.node(str(node_id), f"Node\nMin: {node.bounding_box.min_point}\nMax: {node.bounding_box.max_point}")
+        
+        # Recursively add children
+        left_id = node_id * 2 + 1
+        right_id = node_id * 2 + 2
+        if node.left:
+            graph.edge(str(node_id), str(left_id))
+            visualize_bvh(node.left, graph, left_id)
+        if node.right:
+            graph.edge(str(node_id), str(right_id))
+            visualize_bvh(node.right, graph, right_id)
+    return graph
+    
 if __name__ == "__main__":
     # initialize velocity analyzer
     bricks_in = VelocityAnalyzer('bricks_in_velocity.csv')

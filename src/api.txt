@@ -1,0 +1,60 @@
+normal:
+stylish
+    cp
+    sp
+    score
+velocity
+    velocity
+paddle
+    x
+bricks
+    left_num
+    hp = 3
+        a.bounding_box
+        b.bounding_box
+        c.bounding_box
+    hp = 2
+        a.bounding_box
+        b.bounding_box
+        c.bounding_box
+    hp = 1 
+        a.bounding_box
+        b.bounding_box
+        c.bounding_box
+ball
+    x
+    y
+
+spec:
+stylish
+    cp
+    sp
+    score
+velocity
+    velocity
+    speed
+paddle
+    x
+    y
+    w
+    h
+brick
+    sum_num
+    w
+    h
+    hp = 3
+        a.bounding_box
+        b.bounding_box
+        c.bounding_box
+    hp = 2
+        a.bounding_box
+        b.bounding_box
+        c.bounding_box
+    hp = 1 
+        a.bounding_box
+        b.bounding_box
+        c.bounding_box
+ball
+    radius
+    x
+    y
