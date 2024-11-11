@@ -165,8 +165,10 @@ class Game(object):
             else:
                 delta_x = 0
             velocity = np.array([self.velocity.velocity[0] + 2 * delta_x, - self.velocity.velocity[1]])
-            velocity = np.clip(velocity, -self.velocity.speed, self.velocity.speed)
+            if self.ball.pos[0] + self.ball.radius >= self.paddle.rect[0]: velocity[0] = - velocity[0]
+            if self.ball.pos[0] - self.ball.radius <= self.paddle.rect[0] + self.paddle.rect[2]: velocity[0] = - velocity[0]
             # limit operation
+            velocity = np.clip(velocity, -self.velocity.speed, self.velocity.speed)
             self.velocity.velocity = velocity
     #-------------------------------------------------------------------------
     # funtion : bricks control = collision control

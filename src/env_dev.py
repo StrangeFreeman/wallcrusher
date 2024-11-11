@@ -146,6 +146,8 @@ class PlayGround0(Game):
             self.paddle.rect[2],
             self.paddle.rect[3] + 50,
         ]
+        velocity = self.velocity.velocity
+        
         if not isCollision(self.ball.pos, upper_paddle, self.ball.radius):
             self.f_x = self.paddle.coordinates[0]
         else:
@@ -158,8 +160,10 @@ class PlayGround0(Game):
                 delta_x = self.paddle.coordinates[0] - self.f_x
             else:
                 delta_x = 0
-            velocity = np.array([self.velocity.velocity[0] + 2*delta_x, - self.velocity.velocity[1]])
-            velocity = np.clip(velocity, -self.velocity.speed, self.velocity.speed)
+            velocity = np.array([self.velocity.velocity[0] + 2*delta_x, - self.velocity.speed])
+            if self.ball.pos[0] + self.ball.radius >= self.paddle.rect[0]: velocity[0] = - velocity[0]
+            if self.ball.pos[0] - self.ball.radius <= self.paddle.rect[0] + self.paddle.rect[2]: velocity[0] = - velocity[0]
             # limit operation
-            self.velocity.update(velocity = velocity)
+            velocity = np.clip(velocity, -self.velocity.speed, self.velocity.speed)
+            self.velocity.velocity = velocity
         

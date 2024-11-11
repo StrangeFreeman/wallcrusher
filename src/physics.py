@@ -35,7 +35,7 @@ class BoundingBox(object):
         d_entry = np.array([self.min_point[0] - other.max_point[0], self.min_point[1] - other.max_point[1]])
         d_exit  = np.array([self.max_point[0] - other.min_point[0], self.max_point[1] - other.min_point[1]])
         t_entry = np.zeros(2)
-        t_entry = np.zeros(2)
+        t_exit  = np.zeros(2)
         if velocity[0] < 0: d_entry[0], d_exit[0] = d_exit[0], d_entry[0]
         if velocity[1] < 0: d_entry[1], d_exit[1] = d_exit[1], d_entry[1] 
         for i in range(2):
