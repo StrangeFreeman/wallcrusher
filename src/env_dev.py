@@ -140,14 +140,17 @@ class PlayGround0(Game):
         return True
     
     def paddleControl(self, auto) -> None:
+        # paddle edge detect 
+        edge = self.paddleEdgeDetect()
+        if edge is not None:
+            self.paddle.coordinates[0] = edge
+        # friction and ball-paddle collision
         upper_paddle = [
             self.paddle.coordinates[0],
             self.paddle.coordinates[1],
             self.paddle.rect[2],
             self.paddle.rect[3] + 50,
         ]
-        velocity = self.velocity.velocity
-        
         if not isCollision(self.ball.pos, upper_paddle, self.ball.radius):
             self.f_x = self.paddle.coordinates[0]
         else:

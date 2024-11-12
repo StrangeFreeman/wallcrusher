@@ -102,18 +102,7 @@ class Game(object):
     
     #-------------------------------------------------------------------------
     # Main Loop
-    #-------------------------------------------------------------------------    
-    #-------------------------------------------------------------------------
-    # funtion : paddle edge detect
-    #------------------------------------------------------------------------- 
-    def paddleEdgeDetect(self) -> int:
-        paddle_x_center = self.paddle.coordinates[0] + self.paddle.rect[2]
-        if paddle_x_center - self.velocity.speed <= 0 + self.paddle.rect[2] / 2:
-            return self.paddle.rect[2] / 4
-        elif paddle_x_center + self.velocity.speed >= self.canvas_width - self.paddle.rect[2] / 2:
-            return - (self.paddle.rect[2] / 4)
-        else:
-            return 0
+    #-------------------------------------------------------------------------            
     # -------------------------------------------------------------------------
     # function: type event control
     # -------------------------------------------------------------------------
@@ -126,29 +115,44 @@ class Game(object):
                 # determine whether to press the ESC button
                 self.running = False       
             # manual 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # exit auto mode 
+                if self.auto_flag:
+                    print("switch to manual")
+                    self.auto_flag = False
             if event.type == pygame.MOUSEMOTION:
                 if not self.auto_flag:
                     # determine paddle position
-                    self.paddle.coordinates[0] = pygame.mouse.get_pos()[0] - (self.paddle.rect[2] / 2)
-                edge = self.paddleEdgeDetect()
-                if edge != 0:
-                    self.paddle.coordinates[0] += edge                   
+                    self.paddle.coordinates[0] = pygame.mouse.get_pos()[0] - (self.paddle.rect[2] / 2)                  
             # auto mode
             if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 if not self.auto_flag:
                     print("activate automode")
                     self.auto_flag = True
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # exit auto mode 
-                if self.auto_flag:
-                    print("switch to manual")
-                    self.auto_flag = False       
+            # start game        
             if event.type == pygame.MOUSEBUTTONDOWN and not self.game_mode:
                 self.game_mode = True  
+            if self.auto_flag and not self.game_mode:
+                self.game_mode = True
+    #-------------------------------------------------------------------------
+    # funtion : paddle edge detect
+    #------------------------------------------------------------------------- 
+    def paddleEdgeDetect(self) -> int:
+        if   self.paddle.coordinates[0] <= 0:
+            return 0
+        elif self.paddle.coordinates[0] >= self.canvas_width - self.paddle.rect[2]:
+            return self.canvas_width - self.paddle.rect[2]
+        else:
+            return None            
     #-------------------------------------------------------------------------
     # funtion : paddle control
     #------------------------------------------------------------------------- 
     def paddleControl2(self) -> None:
+        # paddle edge detect 
+        edge = self.paddleEdgeDetect()
+        if edge is not None:
+            self.paddle.coordinates[0] = edge
+        # friction and ball-paddle collision
         upper_paddle = [
             self.paddle.coordinates[0],
             self.paddle.coordinates[1],
@@ -174,13 +178,11 @@ class Game(object):
     # funtion : bricks control = collision control
     #------------------------------------------------------------------------- 
     def brickControl2(self) -> None:
-        # detecting
+        # collision detect
         target = bvhTrace2(self.bricks.bvh_tree, self.ball.bounding_box, self.velocity.velocity)
         if target:
             # Responses
             self.ball.update([self.ball.pos[0] + self.velocity.velocity[0] * target.bounding_box.collision_time, self.ball.pos[1] + self.velocity.velocity[1] * target.bounding_box.collision_time])
-            # Deflecting
-            self.velocity.fix(deflecting(self.ball.pos, target.rect, self.velocity.velocity))
             target.hp -= 1
             if target.hp <= 0:
                 self.stylish.cp += 1
@@ -188,6 +190,8 @@ class Game(object):
                 target.visible = False
                 self.bricks.num -= 1 
                 self.stylish.stylish()
+            # Deflecting
+            self.velocity.fix(deflecting(self.ball.pos, target.rect, self.velocity.velocity))
             
     #-------------------------------------------------------------------------
     # funtion : ball control
@@ -198,8 +202,8 @@ class Game(object):
             self.ball.coordinates = [
                 self.paddle.rect[0] + ((self.paddle.rect[2] - self.ball.radius) >> 1), 
                 self.paddle.rect[1] - self.ball.radius]
-            if self.auto_flag:
-                self.game_mode = True
+            # if self.auto_flag:
+            #     self.game_mode = True
             return None
         # determine whether death
         if self.ball.coordinates[1] + self.velocity.velocity[1] > self.canvas_height - self.ball.radius:
