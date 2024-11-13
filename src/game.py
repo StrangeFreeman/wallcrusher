@@ -132,8 +132,8 @@ class Game(object):
             # start game        
             if event.type == pygame.MOUSEBUTTONDOWN and not self.game_mode:
                 self.game_mode = True  
-            if self.auto_flag and not self.game_mode:
-                self.game_mode = True
+        if self.auto_flag and not self.game_mode:
+            self.game_mode = True
     #-------------------------------------------------------------------------
     # funtion : paddle edge detect
     #------------------------------------------------------------------------- 
