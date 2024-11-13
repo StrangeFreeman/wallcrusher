@@ -202,8 +202,6 @@ class Game(object):
             self.ball.coordinates = [
                 self.paddle.rect[0] + ((self.paddle.rect[2] - self.ball.radius) >> 1), 
                 self.paddle.rect[1] - self.ball.radius]
-            # if self.auto_flag:
-            #     self.game_mode = True
             return None
         # determine whether death
         if self.ball.coordinates[1] + self.velocity.velocity[1] > self.canvas_height - self.ball.radius:
