@@ -164,7 +164,7 @@ class Game(object):
 
         if isCollision(self.ball.pos, self.paddle.rect, self.ball.radius):
             # ball friction
-            if self.game_mode:
+            if self.game_mode and self.f_x is not None:
                 delta_x = self.paddle.coordinates[0] - self.f_x
             else:
                 delta_x = 0
